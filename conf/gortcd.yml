@@ -1,0 +1,88 @@
+---
+# The only valid version is currently 1, but there are no backward
+# compatibility until gortcd reached v1.0.0. After that, config file
+# will be versioned.
+version: "1"
+
+server:
+  # log config, see https://github.com/uber-go/zap
+  log:
+    level: "info"
+    disableCaller: true
+    disableStacktrace: true
+  # use REUSEPORT sockets if available, dramatically
+  # improves the performance on multi-threaded systems.
+  reuseport: true
+  # maximum count of concurrent workers that process request,
+  # use to limit memory consumption.
+  workers: 100
+  listen:
+    - 0.0.0.0:3478
+  # default realm
+  realm: gortc.io
+  # the SOFTWARE attribute value;
+  # not sending attribute if not set
+  software: gortcd
+  # verify the FINGERPRINT attribute
+  check_fingerprint: true
+
+  # options for debugging
+  debug:
+    # periodic pruning of allocations/permissions ("collect" calls)
+    collect: false
+
+  # export pprof metrics
+  # pprof: "localhost:3256"
+  # export prometheus metrics
+  # prometheus:
+    # addr: "localhost:3255"
+    # active: true # disable or enable metrics collection overhead
+
+# Management API.
+api:
+  addr: "localhost:3257"
+
+auth:
+  # if true, no credentials are checked
+  public: true
+
+  nonce:
+    static: false
+    timeout: 600s
+# Put here valid credentials.
+# So, if you are passing to RTCPeerConnection something like this:
+#  {
+#    urls: "turn:turnserver.example.org",
+#    username: "webrtc",
+#    credential: "turnpassword"
+#  }
+# Use the following:
+#  static:
+#    - username: webrtc
+#      password: turnpassword
+
+filter:
+  # Rules for filtering peer addresses (the target address of relayed data).
+  # If address is filtered, the client will get 403 (Forbidden) error during
+  # STUN transaction.
+  peer:
+    # Default filtering action, if no matches in rules.
+    action: allow
+  # Put here your filtering rules.
+  #  rules:
+  #    - action: deny # can be "allow", "deny", or "pass" (no-op).
+  #      net: 127.0.0.1/32 # should be CIDR
+  # E.g. to allow only two networks, use following:
+  # peer:
+  #   action: deny
+  #   rules:
+  #     - net: 10.0.0.0/24
+  #       action: allow
+  #     - net: 10.5.0.0/24
+  #       action: allow
+  # Attempts to relay data to address that is not in those networks
+  # will result in 403 error.
+
+  client:
+    # same as "peer" section, but for client addresses.
+    action: allow
