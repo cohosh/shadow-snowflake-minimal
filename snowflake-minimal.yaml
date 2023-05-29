@@ -26,36 +26,48 @@ hosts:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-server
-      environment: 'TOR_PT_MANAGED_TRANSPORT_VER=1;TOR_PT_SERVER_BINDADDR=snowflake-0.0.0.0:8000;TOR_PT_SERVER_TRANSPORTS=snowflake;TOR_PT_ORPORT=127.0.0.1:8080'
+      environment: 
+        TOR_PT_MANAGED_TRANSPORT_VER: "1"
+        TOR_PT_SERVER_BINDADDR: snowflake-0.0.0.0:8000
+        TOR_PT_SERVER_TRANSPORTS: snowflake
+        TOR_PT_ORPORT: 127.0.0.1:8080
       args: -disable-tls
       start_time: 10
+      expected_final_state: running
     - path: ~/.local/bin/tgen
       args: ../../../conf/tgen.server.graphml.xml
       start_time: 1
+      expected_final_state: running
   broker:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-broker
       args: -addr ":8080" -disable-tls -unsafe-logging
       start_time: 1
+      expected_final_state: running
   proxy:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-proxy
       args: -keep-local-addresses -broker "http://broker:8080" -relay "ws://snowflakeserver:8000" -stun "stun:stun:3478"
       start_time: 60
+      expected_final_state: running
   stun:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/stund
       start_time: 1
+      expected_final_state: running
   snowflakeclient:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-client
-      environment: 'TOR_PT_MANAGED_TRANSPORT_VER=1;TOR_PT_CLIENT_TRANSPORTS=snowflake'
+      environment:
+        TOR_PT_MANAGED_TRANSPORT_VER: "1"
+        TOR_PT_CLIENT_TRANSPORTS: snowflake
       args: -ice "stun:stun:3478" -url "http://broker:8080" -keep-local-addresses -log "pt.log" -unsafe-logging
       start_time: 90
+      expected_final_state: running
     - path: ~/.local/bin/tgen
       args: ../../../conf/tgen.client.graphml.xml
       start_time: 120
