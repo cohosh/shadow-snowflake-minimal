@@ -42,14 +42,14 @@ hosts:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-broker
-      args: -addr ":8080" -disable-tls -unsafe-logging
+      args: -addr ":8080" -disable-tls -unsafe-logging -allowed-relay-pattern ^snowflakeserver$ -bridge-list-path ../../../conf/bridge-list.json
       start_time: 1
       expected_final_state: running
   proxy:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-proxy
-      args: -keep-local-addresses -broker "http://broker:8080" -relay "ws://snowflakeserver:8000" -stun "stun:stun:3478"
+      args: -keep-local-addresses -broker "http://broker:8080" -relay "ws://snowflakeserver:8000" -stun "stun:stun:3478" -allowed-relay-hostname-pattern ^snowflakeserver$ -allow-non-tls-relay
       start_time: 60
       expected_final_state: running
   stun:

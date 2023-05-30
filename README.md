@@ -37,3 +37,11 @@ cp client ~/.local/bin/snowflake-client
 We also need a binary for the STUN server. The simplest one I have found that currently works in Shadow is a Go project called [stund](https://github.com/gortc/stund). To install in the right place, simply run
 
 `GOBIN=~/.local/bin go install github.com/gortc/stund@latest`
+
+## Running shadow
+
+The go runtime requires a special flag to run without blocking:
+
+```
+shadow --model-unblocked-syscall-latency=true snowflake-minimal.yaml > shadow.log
+```
