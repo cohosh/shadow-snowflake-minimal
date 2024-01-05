@@ -8,7 +8,7 @@
   <graph edgedefault="directed">
     <node id="start">
       <data key="d5">localhost:8080</data>
-      <data key="d7">localhost:9000</data>
+      <data key="d7">localhost:SOCKS5LISTENPORT</data>
     </node>
     <node id="stream">
       <data key="d2">1 MiB</data>
