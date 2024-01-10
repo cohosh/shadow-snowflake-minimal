@@ -31,11 +31,18 @@ hosts:
         TOR_PT_SERVER_BINDADDR: snowflake-0.0.0.0:8000
         TOR_PT_SERVER_TRANSPORTS: snowflake
         TOR_PT_ORPORT: 127.0.0.1:8080
-      args: -disable-tls
+      args: -disable-tls -unsafe-logging
       start_time: 10
       expected_final_state: running
     - path: ~/.local/bin/tgen
       args: ../../../conf/tgen.server.graphml.xml
+      start_time: 1
+      expected_final_state: running
+  probetest:
+    network_node_id: 0
+    processes:
+    - path: ~/.local/bin/snowflake-probetest
+      args: -disable-tls -stun "stun:stun:3478"
       start_time: 1
       expected_final_state: running
   broker:
@@ -49,7 +56,7 @@ hosts:
     network_node_id: 0
     processes:
     - path: ~/.local/bin/snowflake-proxy
-      args: -keep-local-addresses -broker "http://broker:8080" -relay "ws://snowflakeserver:8000" -stun "stun:stun:3478" -allowed-relay-hostname-pattern ^snowflakeserver$ -allow-non-tls-relay
+      args: -verbose -unsafe-logging -keep-local-addresses -broker "http://broker:8080" -relay "ws://snowflakeserver:8000" -stun "stun:stun:3478" -allowed-relay-hostname-pattern ^snowflakeserver$ -allow-non-tls-relay -nat-probe-server "http://probetest:8443/probe"
       start_time: 60
       expected_final_state: running
   stun:
