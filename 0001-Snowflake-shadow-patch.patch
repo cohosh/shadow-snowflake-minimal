@@ -1,0 +1,30 @@
+From 6d67f0e6dcf2f2fdb748674ee65709726551b934 Mon Sep 17 00:00:00 2001
+From: Cecylia Bocovich <cohosh@torproject.org>
+Date: Sun, 28 Jan 2024 14:06:33 -0500
+Subject: [PATCH] Snowflake shadow patch
+
+---
+ server/dial_linux.go | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/server/dial_linux.go b/server/dial_linux.go
+index b5a53c1..6722787 100644
+--- a/server/dial_linux.go
++++ b/server/dial_linux.go
+@@ -34,12 +34,8 @@ import (
+ // https://blog.cloudflare.com/the-quantum-state-of-a-tcp-port/
+ // https://forum.torproject.net/t/stable-release-0-4-5-16-and-0-4-7-13/6216
+ func dialerControl(network, address string, c syscall.RawConn) error {
+-	var sockErr error
+ 	err := c.Control(func(fd uintptr) {
+-		sockErr = syscall.SetsockoptInt(int(fd), unix.SOL_IP, unix.IP_BIND_ADDRESS_NO_PORT, 1)
++		syscall.SetsockoptInt(int(fd), unix.SOL_IP, unix.IP_BIND_ADDRESS_NO_PORT, 1)
+ 	})
+-	if err == nil {
+-		err = sockErr
+-	}
+ 	return err
+ }
+-- 
+2.43.0
+

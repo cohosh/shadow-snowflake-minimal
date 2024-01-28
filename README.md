@@ -12,7 +12,9 @@ The configuration for this experiment assumes the following Snowflake binaries a
 - snowflake-proxy
 - snowflake-client
 
-Snowflake requires a patch to work correctly in a closed environment. A working [branch with this patch](https://gitlab.torproject.org/cohosh/snowflake/-/tree/shadow) is a available, the last commit of which may be rebased ontop of a more recent version of Snowflake. To compile and install the above binaries: clone the repo, check out the shadow branch, and run the following commands.
+To compile and install the above binaries: clone the repo, check out the shadow branch, and run the following commands.
+
+Note: the snowflake server requires the provided [patch](0001-Snowflake-shadow-patch.patch) to avoid error in the absense of support in Shadow for the `IP_BIND_ADDRESS_NO_PORT` socket option.
 
 ```
 cd server
